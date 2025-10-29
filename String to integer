@@ -1,0 +1,47 @@
+class Solution {
+    public int myAtoi(String s) {
+        if (s == null) return 0;
+        int n = s.length();
+        int i = 0;
+        // 1. skip leading whitespace
+        while (i < n && s.charAt(i) == ' ') {
+            i++;
+        }
+        if (i == n) return 0;
+
+        // 2. check optional sign
+        int sign = 1;
+        char c = s.charAt(i);
+        if (c == '-') {
+            sign = -1;
+            i++;
+        } else if (c == '+') {
+            i++;
+        }
+
+        // 3. convert digits, stop on non-digit
+        int result = 0;
+        int INT_MAX = Integer.MAX_VALUE;     //  2^31-1 = 2147483647
+        int INT_MIN = Integer.MIN_VALUE;     // -2^31 = -2147483648
+        int threshold = INT_MAX / 10;        // 214748364
+
+        while (i < n) {
+            char ch = s.charAt(i);
+            if (ch < '0' || ch > '9') {
+                break;
+            }
+            int digit = ch - '0';
+
+            // 4. check overflow/underflow before multiplying & adding
+            if (result > threshold || (result == threshold && digit > INT_MAX % 10)) {
+                // overflow
+                return (sign == 1) ? INT_MAX : INT_MIN;
+            }
+
+            result = result * 10 + digit;
+            i++;
+        }
+
+        return result * sign;
+    }
+}
